@@ -10,6 +10,7 @@
     "format": "biome format --write",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
+    "db:reset": "node scripts/reset-database.mjs",
     "deploy:preview": "npx vercel deploy --yes",
     "deploy:prod": "npx vercel deploy --prod --yes"
   },

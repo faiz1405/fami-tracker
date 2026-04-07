@@ -179,7 +179,6 @@ export function NewTransactionForm() {
             inputMode="numeric"
             autoComplete="off"
             placeholder="Rp 85.000"
-            pattern="[0-9]*"
             required
             value={formatRupiahInput(amount)}
             onChange={(e) => setAmount(digitsOnly(e.target.value))}
