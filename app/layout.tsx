@@ -40,7 +40,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="id" className={ibmPlexSans.variable} suppressHydrationWarning>
-      <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
+      <body
+        className="min-h-dvh bg-background font-sans text-foreground antialiased"
+        suppressHydrationWarning
+      >
         <ThemeProvider>
           <PwaRegister />
           <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col">

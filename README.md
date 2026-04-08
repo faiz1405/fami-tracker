@@ -88,7 +88,9 @@ Fitur ini mengekspor transaksi ke Google Sheets dengan pola **1 tab = 1 bulan** 
 - **Share spreadsheet** ke email `client_email` dari service account dengan role **Editor**.
 - Set env:
   - `GOOGLE_SHEETS_SPREADSHEET_ID` (lihat `.env.example`)
-  - `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON` (JSON kredensial service account)
+  - **Salah satu**:
+    - `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON` (JSON kredensial service account, 1 baris valid), atau
+    - `GOOGLE_SA_CLIENT_EMAIL` + `GOOGLE_SA_PRIVATE_KEY` (direkomendasikan agar tidak mudah error format JSON)
 
 4. Buat/selaraskan schema DB:
 

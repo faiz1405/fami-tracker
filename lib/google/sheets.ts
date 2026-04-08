@@ -38,23 +38,38 @@ function parseServiceAccountJson(raw: string): ServiceAccountJson {
 }
 
 function getServiceAccountCredentials(): ServiceAccountJson {
-  const raw = process.env.GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON?.trim();
-  if (!raw) {
-    throw new Error("GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON belum diset.");
+  const raw = process.env.GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON?.trim() ?? "";
+  if (raw.length > 0) {
+    const { client_email, private_key } = parseServiceAccountJson(raw);
+    return {
+      client_email,
+      private_key: private_key.replace(/\\n/g, "\n"),
+    };
   }
-  const { client_email, private_key } = parseServiceAccountJson(raw);
+
+  const clientEmail = process.env.GOOGLE_SA_CLIENT_EMAIL?.trim();
+  const privateKey = process.env.GOOGLE_SA_PRIVATE_KEY?.trim();
+  if (!clientEmail || !privateKey) {
+    throw new Error(
+      "Service account belum diset. Isi GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON atau pasangan GOOGLE_SA_CLIENT_EMAIL + GOOGLE_SA_PRIVATE_KEY.",
+    );
+  }
+
   return {
-    client_email,
-    // Private key di env sering disimpan dengan `\\n`
-    private_key: private_key.replace(/\\n/g, "\n"),
+    client_email: clientEmail,
+    private_key: privateKey.replace(/\\n/g, "\n"),
   };
 }
 
 function createJwt() {
   const { client_email, private_key } = getServiceAccountCredentials();
+  const normalizedKey = private_key
+    .replace(/\r/g, "")
+    .replace(/\\n/g, "\n")
+    .trim();
   return new google.auth.JWT({
     email: client_email,
-    key: private_key,
+    key: normalizedKey,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 }
@@ -143,4 +158,24 @@ export async function appendRows(
 
   const updated = res.data.updates?.updatedRows;
   return typeof updated === "number" ? updated : rows.length;
+}
+
+export async function getSheetRows(tabName: string): Promise<string[][]> {
+  const { sheets, spreadsheetId } = getSheetsClient();
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${tabName}!A2:H`,
+  });
+  return (res.data.values ?? []).map((r) => r.map((v) => String(v ?? "")));
+}
+
+export async function clearSheetRow(
+  tabName: string,
+  rowNumber1Based: number,
+): Promise<void> {
+  const { sheets, spreadsheetId } = getSheetsClient();
+  await sheets.spreadsheets.values.clear({
+    spreadsheetId,
+    range: `${tabName}!A${rowNumber1Based}:H${rowNumber1Based}`,
+  });
 }

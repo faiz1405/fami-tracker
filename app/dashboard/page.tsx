@@ -122,17 +122,17 @@ export default async function DashboardPage() {
       </section>
 
       <section aria-labelledby="recent-heading">
-        <h2
-          id="recent-heading"
-          className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground"
-        >
-          <Sparkles
-            className="size-4 shrink-0 text-amber-500 dark:text-amber-400"
-            aria-hidden
-          />
-          <span className="text-muted-foreground">Transaksi terbaru</span>
-        </h2>
-        <div className="mb-3">
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <h2
+            id="recent-heading"
+            className="flex items-center gap-2 text-sm font-medium text-foreground"
+          >
+            <Sparkles
+              className="size-4 shrink-0 text-amber-500 dark:text-amber-400"
+              aria-hidden
+            />
+            <span className="text-muted-foreground">Transaksi terbaru</span>
+          </h2>
           <SheetsSyncButton />
         </div>
         <RecentTransactionsTabs items={data.recent} />
