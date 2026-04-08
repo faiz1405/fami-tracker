@@ -38,6 +38,7 @@ export function BottomNav() {
             <li key={href} className="flex min-w-0 flex-1">
               <Link
                 href={href}
+                prefetch={false}
                 className={cn(
                   "flex min-h-11 w-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl px-2 text-xs font-medium transition-colors duration-200",
                   active

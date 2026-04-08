@@ -1,4 +1,4 @@
-const SW_VERSION = "v2";
+const SW_VERSION = "v3";
 const STATIC_CACHE = `fami-static-${SW_VERSION}`;
 const RUNTIME_CACHE = `fami-runtime-${SW_VERSION}`;
 const CACHE_PREFIX = "fami-";
@@ -43,6 +43,15 @@ function isStaticAsset(url) {
   return (
     url.pathname.startsWith("/_next/static/") ||
     url.pathname.match(/\.(?:js|css|png|jpg|jpeg|webp|svg|woff2?)$/i)
+  );
+}
+
+function isRscDataRequest(request, url) {
+  return (
+    request.headers.has("rsc") ||
+    request.headers.has("next-router-state-tree") ||
+    request.headers.has("next-url") ||
+    url.searchParams.has("_rsc")
   );
 }
 
@@ -119,24 +128,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-      return fetch(request)
-        .then(async (response) => {
-          const cache = await caches.open(RUNTIME_CACHE);
-          await cache.put(request, response.clone());
-          await trimRuntimeCache(RUNTIME_CACHE, MAX_RUNTIME_ENTRIES);
-          return response;
-        })
-        .catch(async () => {
-          if (request.destination === "document") {
-            return (await caches.match("/offline")) || Response.error();
-          }
-          return Response.error();
-        });
-    }),
-  );
+  // Request data dinamis Next.js (RSC/flight) harus selalu fresh.
+  if (isRscDataRequest(request, url)) {
+    event.respondWith(fetch(request));
+    return;
+  }
+  // Untuk request lain yang bukan aset statis, utamakan network agar tidak stale.
+  event.respondWith(fetch(request));
 });
