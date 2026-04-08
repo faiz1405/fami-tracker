@@ -7,6 +7,7 @@ import { useState, useTransition } from "react";
 
 import { deleteTransaction } from "@/app/actions/transactions";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import type { TransactionRow } from "@/drizzle/schema";
 import { formatIdr } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -59,12 +60,7 @@ export function TransactionRowCard({
           : "border-l-4 border-l-amber-500 bg-gradient-to-br from-card via-card to-amber-500/[0.06] ring-amber-500/15 dark:border-l-amber-400 dark:to-amber-400/[0.08] dark:ring-amber-400/20",
       )}
     >
-      <div
-        className={cn(
-          "flex items-start justify-between gap-2 px-3 py-3.5 sm:gap-3 sm:px-4",
-          confirmOpen && "pointer-events-none opacity-40",
-        )}
-      >
+      <div className="flex items-start justify-between gap-2 px-3 py-3.5 sm:gap-3 sm:px-4">
         <div className="flex min-w-0 flex-1 gap-3">
           <span
             className={cn(
@@ -136,57 +132,92 @@ export function TransactionRowCard({
         </div>
       </div>
 
-      {confirmOpen ? (
-        <div
-          className={cn(
-            "absolute inset-0 z-10 box-border flex min-h-full flex-col items-center justify-center overflow-y-auto overscroll-contain",
-            "bg-background/92 px-6 backdrop-blur-sm sm:px-8",
-            "pt-[max(2.75rem,calc(1rem+env(safe-area-inset-top,0px)))]",
-            "pb-[max(6.5rem,calc(2rem+env(safe-area-inset-bottom,0px)))] sm:pb-[max(7.5rem,calc(2.25rem+env(safe-area-inset-bottom,0px)))]",
-          )}
-          data-testid="transaction-delete-confirm"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={`delete-title-${t.id}`}
-        >
-          <div className="flex w-full max-w-sm flex-col items-center gap-2 pb-1">
-            <p
-              id={`delete-title-${t.id}`}
-              className="text-center text-sm font-medium leading-relaxed text-foreground"
+      <Dialog.Root
+        open={confirmOpen}
+        onOpenChange={(open) => {
+          setConfirmOpen(open);
+          if (!open) {
+            setError(null);
+          }
+        }}
+      >
+        <Dialog.Portal>
+          <Dialog.Backdrop />
+          <Dialog.Viewport>
+            <Dialog.Popup
+              data-testid="transaction-delete-confirm"
+              aria-labelledby={`delete-title-${t.id}`}
+              aria-describedby={`delete-desc-${t.id}`}
             >
-              Hapus transaksi ini? Tindakan tidak bisa dibatalkan.
-            </p>
-            {error ? (
-              <p className="text-center text-xs text-destructive" role="alert">
-                {error}
-              </p>
-            ) : null}
-            <div className="flex w-full flex-col gap-3 sm:flex-row sm:justify-center sm:gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                className="min-h-11 w-full cursor-pointer sm:min-h-10 sm:flex-1"
-                disabled={pending}
-                onClick={() => {
-                  setConfirmOpen(false);
-                  setError(null);
-                }}
-              >
-                Batal
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                className="min-h-11 w-full cursor-pointer sm:min-h-10 sm:flex-1"
-                disabled={pending}
-                onClick={handleDelete}
-              >
-                {pending ? "Menghapus…" : "Hapus"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      ) : null}
+              <div className="flex flex-col gap-5">
+                <div className="flex items-start gap-3.5">
+                  <span
+                    className={cn(
+                      "flex size-11 shrink-0 items-center justify-center rounded-2xl ring-1",
+                      "bg-destructive/12 text-destructive ring-destructive/20",
+                      "dark:bg-destructive/18 dark:ring-destructive/30",
+                    )}
+                    aria-hidden
+                  >
+                    <Trash2 className="size-5" />
+                  </span>
+                  <div className="min-w-0 flex-1 space-y-1.5 pt-0.5">
+                    <Dialog.Title
+                      id={`delete-title-${t.id}`}
+                      className="text-base font-semibold leading-snug tracking-tight text-foreground"
+                    >
+                      Hapus transaksi ini?
+                    </Dialog.Title>
+                    <Dialog.Description
+                      id={`delete-desc-${t.id}`}
+                      className="text-sm leading-relaxed text-muted-foreground"
+                    >
+                      Tindakan tidak bisa dibatalkan. Transaksi{" "}
+                      <span className="font-medium text-foreground">
+                        {t.category}
+                      </span>{" "}
+                      akan dihapus permanen.
+                    </Dialog.Description>
+                  </div>
+                </div>
+
+                {error ? (
+                  <p
+                    className="text-center text-sm text-destructive"
+                    role="alert"
+                  >
+                    {error}
+                  </p>
+                ) : null}
+
+                <div className="flex flex-row items-center justify-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="min-h-11 w-1/2 cursor-pointer sm:min-h-10"
+                    disabled={pending}
+                    onClick={() => {
+                      setConfirmOpen(false);
+                      setError(null);
+                    }}
+                  >
+                    Batal
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="min-h-11 w-1/2 cursor-pointer sm:min-h-10"
+                    disabled={pending}
+                    onClick={handleDelete}
+                  >
+                    {pending ? "Menghapus…" : "Hapus"}
+                  </Button>
+                </div>
+              </div>
+            </Dialog.Popup>
+          </Dialog.Viewport>
+        </Dialog.Portal>
+      </Dialog.Root>
     </li>
   );
 }

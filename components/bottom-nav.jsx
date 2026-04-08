@@ -26,7 +26,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Navigasi utama"
-      className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md supports-[backdrop-filter]:bg-card/80"
+      className="fixed bottom-0 left-1/2 z-50 w-full max-w-md -translate-x-1/2 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md supports-backdrop-filter:bg-card/80"
     >
       <ul className="flex h-16 items-stretch justify-around gap-1 px-2">
         {items.map(({ href, label, icon: Icon }) => {
@@ -39,18 +39,25 @@ export function BottomNav() {
               <Link
                 href={href}
                 prefetch={false}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-11 w-full cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl px-2 text-xs font-medium transition-colors duration-200",
+                  "box-border flex min-h-11 w-full cursor-pointer flex-col items-center justify-center gap-0.5 border-t-2 border-transparent px-1.5 pt-2 pb-1.5 text-xs transition-colors duration-200 touch-manipulation",
                   active
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground",
+                    ? "border-t-primary font-semibold text-primary"
+                    : cn(
+                        "font-medium text-muted-foreground",
+                        "hover:text-foreground active:text-foreground",
+                      ),
                 )}
               >
                 <Icon
                   aria-hidden
-                  className={cn("size-6", active && "text-primary")}
+                  className={cn(
+                    "size-6 shrink-0 transition-colors duration-200",
+                    active ? "text-primary" : "opacity-90",
+                  )}
                 />
-                <span>{label}</span>
+                <span className="leading-tight">{label}</span>
               </Link>
             </li>
           );

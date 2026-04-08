@@ -105,9 +105,11 @@ test.describe("edit dan hapus transaksi", () => {
       .getByRole("button", { name: "Hapus transaksi Transportasi" })
       .click();
 
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Hapus transaksi ini?")).toBeVisible();
     await expect(
-      page.getByText("Hapus transaksi ini? Tindakan tidak bisa dibatalkan."),
-    ).toBeVisible({ timeout: 15_000 });
+      page.getByText(/Tindakan tidak bisa dibatalkan/),
+    ).toBeVisible();
 
     const panel = page.locator('[data-testid="transaction-delete-confirm"]');
     await panel.getByRole("button", { name: "Hapus" }).click();
@@ -133,9 +135,8 @@ test.describe("edit dan hapus transaksi", () => {
     const row = page.getByRole("listitem").filter({ hasText: marker });
     await row.getByRole("button", { name: "Hapus transaksi Belanja" }).click();
 
-    await expect(
-      page.getByText("Hapus transaksi ini? Tindakan tidak bisa dibatalkan."),
-    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("dialog")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Hapus transaksi ini?")).toBeVisible();
 
     const panel = page.locator('[data-testid="transaction-delete-confirm"]');
     await panel.getByRole("button", { name: "Batal" }).click();
