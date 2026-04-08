@@ -77,6 +77,18 @@ cp .env.example .env.local
 - `OPENAI_API_KEY`
 - `OPENAI_BASE_URL` (opsional, default sudah disiapkan)
 - `OPENAI_MODEL` (opsional)
+- `GOOGLE_SHEETS_SPREADSHEET_ID` (opsional, untuk fitur sync)
+- `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON` (opsional, untuk fitur sync)
+
+### Google Sheets Sync (Opsional)
+
+Fitur ini mengekspor transaksi ke Google Sheets dengan pola **1 tab = 1 bulan** (contoh: `April_2026`), auto-create tab, dan auto-append.
+
+- **Siapkan service account** Google Cloud (Sheets API enabled).
+- **Share spreadsheet** ke email `client_email` dari service account dengan role **Editor**.
+- Set env:
+  - `GOOGLE_SHEETS_SPREADSHEET_ID` (lihat `.env.example`)
+  - `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON` (JSON kredensial service account)
 
 4. Buat/selaraskan schema DB:
 

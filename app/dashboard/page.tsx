@@ -14,6 +14,7 @@ import { buildForecastAlerts } from "@/lib/queries/forecast";
 import { getInsightText } from "./_components/insight-text";
 import { NaturalInputForm } from "./_components/natural-input-form";
 import { RecentTransactionsTabs } from "./_components/recent-transactions-tabs";
+import { SheetsSyncButton } from "./_components/sheets-sync-button";
 import { SmartAlertCards } from "./_components/smart-alert-cards";
 
 export default async function DashboardPage() {
@@ -131,6 +132,9 @@ export default async function DashboardPage() {
           />
           <span className="text-muted-foreground">Transaksi terbaru</span>
         </h2>
+        <div className="mb-3">
+          <SheetsSyncButton />
+        </div>
         <RecentTransactionsTabs items={data.recent} />
       </section>
     </div>
