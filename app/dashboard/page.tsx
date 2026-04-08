@@ -1,17 +1,20 @@
+import { Sparkles } from "lucide-react";
 import Image from "next/image";
+
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
 
+import { cheerfulCard } from "@/lib/cheerful-card";
 import { formatIdr } from "@/lib/format";
 import { getDashboardData } from "@/lib/queries/dashboard";
 import { buildForecastAlerts } from "@/lib/queries/forecast";
 
 import { getInsightText } from "./_components/insight-text";
 import { NaturalInputForm } from "./_components/natural-input-form";
+import { RecentTransactionsTabs } from "./_components/recent-transactions-tabs";
 import { SmartAlertCards } from "./_components/smart-alert-cards";
-import { TransactionList } from "./_components/transaction-list";
 
 export default async function DashboardPage() {
   let data: Awaited<ReturnType<typeof getDashboardData>>;
@@ -58,26 +61,26 @@ export default async function DashboardPage() {
         <ThemeToggle />
       </header>
 
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.emerald}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             Saldo gabungan
           </CardTitle>
         </CardHeader>
         <CardContent className="">
-          <p className="text-3xl font-semibold tabular-nums tracking-tight">
+          <p className="text-3xl font-semibold tabular-nums tracking-tight text-foreground">
             {formatIdr(data.balance)}
           </p>
-          <div className="flex gap-4 justify-between mt-3 text-sm">
+          <div className="flex gap-4 justify-between mt-4 rounded-xl bg-muted/40 px-3 py-2.5 text-sm ring-1 ring-foreground/5">
             <span className="text-muted-foreground">
               Pemasukan{" "}
-              <span className="font-medium text-emerald-400">
+              <span className="font-semibold text-emerald-500 dark:text-emerald-400">
                 {formatIdr(data.income)}
               </span>
             </span>
             <span className="text-muted-foreground">
               Pengeluaran{" "}
-              <span className="font-medium text-amber-200">
+              <span className="font-semibold text-amber-600 dark:text-amber-300">
                 {formatIdr(data.expense)}
               </span>
             </span>
@@ -85,7 +88,7 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.violet}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             Input cepat AI
@@ -96,7 +99,7 @@ export default async function DashboardPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.amber}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             Ringkasan cerdas
@@ -120,11 +123,15 @@ export default async function DashboardPage() {
       <section aria-labelledby="recent-heading">
         <h2
           id="recent-heading"
-          className="mb-3 text-sm font-medium text-muted-foreground"
+          className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground"
         >
-          Transaksi terbaru
+          <Sparkles
+            className="size-4 shrink-0 text-amber-500 dark:text-amber-400"
+            aria-hidden
+          />
+          <span className="text-muted-foreground">Transaksi terbaru</span>
         </h2>
-        <TransactionList items={data.recent} />
+        <RecentTransactionsTabs items={data.recent} />
       </section>
     </div>
   );

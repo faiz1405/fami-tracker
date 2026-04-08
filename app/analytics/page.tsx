@@ -1,5 +1,7 @@
+import { PieChart } from "lucide-react";
 import { PeriodFilter } from "@/app/_components/period-filter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cheerfulCard } from "@/lib/cheerful-card";
 import { formatIdr } from "@/lib/format";
 import {
   getAnalyticsByCategory,
@@ -29,8 +31,14 @@ export default async function AnalyticsPage({
 
   return (
     <div className="flex flex-1 flex-col gap-4">
-      <header className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
+      <header className="space-y-3">
+        <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight">
+          <PieChart
+            className="size-7 shrink-0 text-rose-500 dark:text-rose-400"
+            aria-hidden
+          />
+          Analytics
+        </h1>
         <PeriodFilter
           month={params.month}
           year={params.year}
@@ -38,7 +46,7 @@ export default async function AnalyticsPage({
         />
       </header>
 
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.emerald}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             {params.day !== null
@@ -47,11 +55,13 @@ export default async function AnalyticsPage({
           </CardTitle>
         </CardHeader>
         <CardContent className="">
-          <p className="text-2xl font-semibold">{formatIdr(summary.expense)}</p>
+          <p className="text-2xl font-semibold tabular-nums tracking-tight">
+            {formatIdr(summary.expense)}
+          </p>
         </CardContent>
       </Card>
 
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.sky}>
         <CardHeader className="pb-1">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             Komposisi per kategori
@@ -60,14 +70,16 @@ export default async function AnalyticsPage({
         <CardContent className="">
           <CategoryPieChart data={categoryData} />
           {categoryData.length > 0 ? (
-            <ul className="mt-2 space-y-1 text-sm">
+            <ul className="mt-3 space-y-1.5 text-sm">
               {categoryData.map((row) => (
                 <li
                   key={row.category}
-                  className="flex items-center justify-between"
+                  className="flex items-center justify-between rounded-xl bg-muted/35 px-3 py-2 ring-1 ring-foreground/5 transition-colors hover:bg-muted/50"
                 >
                   <span className="text-muted-foreground">{row.category}</span>
-                  <span className="font-medium">{formatIdr(row.total)}</span>
+                  <span className="font-semibold tabular-nums">
+                    {formatIdr(row.total)}
+                  </span>
                 </li>
               ))}
             </ul>

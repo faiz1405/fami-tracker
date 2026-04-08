@@ -3,6 +3,9 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 
+import { periodFilterSurface } from "@/lib/cheerful-card";
+import { cn } from "@/lib/utils";
+
 const MONTHS = [
   "Januari",
   "Februari",
@@ -17,6 +20,13 @@ const MONTHS = [
   "November",
   "Desember",
 ];
+
+const SELECT_CLASS = cn(
+  "min-h-10 w-full min-w-0 cursor-pointer rounded-xl border border-input bg-background/90 px-2 py-2 text-xs shadow-sm ring-1 ring-foreground/5 transition-colors",
+  "focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+  "sm:min-h-11 sm:px-3 sm:text-sm",
+  "dark:bg-input/40",
+);
 
 function daysInMonth(year: number, month: number): number {
   return new Date(year, month, 0).getDate();
@@ -72,12 +82,38 @@ export function PeriodFilter({
   const dayOptions = Array.from({ length: maxDay }, (_, i) => i + 1);
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="grid grid-cols-2 gap-2">
-        <label className="space-y-1">
-          <span className="text-xs text-muted-foreground">Bulan</span>
+    <div className={cn(periodFilterSurface)}>
+      <div className="grid grid-cols-3 gap-2">
+        <label className="min-w-0 space-y-1">
+          <span className="block truncate text-xs text-muted-foreground">
+            Tanggal
+          </span>
           <select
-            className="min-h-11 w-full cursor-pointer rounded-lg border border-input bg-transparent px-3 text-sm"
+            className={SELECT_CLASS}
+            value={day === null ? "" : String(day)}
+            onChange={(e) => {
+              const v = e.target.value;
+              if (v === "") {
+                update({ day: null });
+              } else {
+                update({ day: Number.parseInt(v, 10) });
+              }
+            }}
+          >
+            <option value="">Semua hari</option>
+            {dayOptions.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="min-w-0 space-y-1">
+          <span className="block truncate text-xs text-muted-foreground">
+            Bulan
+          </span>
+          <select
+            className={SELECT_CLASS}
             value={month}
             onChange={(e) =>
               update({ month: Number.parseInt(e.target.value, 10) })
@@ -90,10 +126,12 @@ export function PeriodFilter({
             ))}
           </select>
         </label>
-        <label className="space-y-1">
-          <span className="text-xs text-muted-foreground">Tahun</span>
+        <label className="min-w-0 space-y-1">
+          <span className="block truncate text-xs text-muted-foreground">
+            Tahun
+          </span>
           <select
-            className="min-h-11 w-full cursor-pointer rounded-lg border border-input bg-transparent px-3 text-sm"
+            className={SELECT_CLASS}
             value={year}
             onChange={(e) =>
               update({ year: Number.parseInt(e.target.value, 10) })
@@ -107,28 +145,6 @@ export function PeriodFilter({
           </select>
         </label>
       </div>
-      <label className="space-y-1">
-        <span className="text-xs text-muted-foreground">Tanggal</span>
-        <select
-          className="min-h-11 w-full cursor-pointer rounded-lg border border-input bg-transparent px-3 text-sm"
-          value={day === null ? "" : String(day)}
-          onChange={(e) => {
-            const v = e.target.value;
-            if (v === "") {
-              update({ day: null });
-            } else {
-              update({ day: Number.parseInt(v, 10) });
-            }
-          }}
-        >
-          <option value="">Semua hari (bulan penuh)</option>
-          {dayOptions.map((d) => (
-            <option key={d} value={d}>
-              {d}
-            </option>
-          ))}
-        </select>
-      </label>
     </div>
   );
 }

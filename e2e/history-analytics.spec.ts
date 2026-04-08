@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import { hasDatabaseUrl, truncateTransactions } from "./db";
+import { fillAmountIdr } from "./helpers/transaction-form";
 
 function firstDayOfCurrentMonth(): string {
   const d = new Date();
@@ -18,7 +19,7 @@ test.describe("riwayat dan analitik", () => {
   test("filter periode dan tanggal di riwayat", async ({ page }) => {
     await page.goto("/transactions/new");
     await page.getByLabel("Tanggal transaksi").fill(firstDayOfCurrentMonth());
-    await page.getByLabel("Jumlah (IDR)").fill("10000");
+    await fillAmountIdr(page, "10000");
     await page.getByLabel("Kategori").selectOption("Transportasi");
     await page.getByRole("button", { name: "Simpan transaksi" }).click();
     await expect(page).toHaveURL(/\/dashboard$/, { timeout: 20_000 });
@@ -31,7 +32,7 @@ test.describe("riwayat dan analitik", () => {
     });
 
     const combos = page.getByRole("combobox");
-    await combos.nth(2).selectOption("1");
+    await combos.nth(0).selectOption("1");
     await expect(page).toHaveURL(/[?&]day=1/);
     await expect(page.getByText("1 transaksi")).toBeVisible({
       timeout: 15_000,
@@ -40,7 +41,7 @@ test.describe("riwayat dan analitik", () => {
 
   test("analitik menampilkan total dan komposisi", async ({ page }) => {
     await page.goto("/transactions/new");
-    await page.getByLabel("Jumlah (IDR)").fill("50000");
+    await fillAmountIdr(page, "50000");
     await page.getByLabel("Kategori").selectOption("Belanja");
     await page.getByRole("button", { name: "Simpan transaksi" }).click();
     await expect(page).toHaveURL(/\/dashboard$/, { timeout: 20_000 });

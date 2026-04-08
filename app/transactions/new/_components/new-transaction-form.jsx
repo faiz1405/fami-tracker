@@ -6,6 +6,7 @@ import { createTransaction } from "@/app/actions/transactions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cheerfulCard } from "@/lib/cheerful-card";
 import { TRANSACTION_CATEGORIES } from "@/lib/constants/transaction-categories";
 import { cn } from "@/lib/utils";
 
@@ -82,7 +83,7 @@ export function NewTransactionForm() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-xl border border-border bg-card/50 p-4">
+      <div className={cn(cheerfulCard.violet, "p-4")}>
         <p className="mb-3 text-sm font-medium text-foreground">
           Foto struk (opsional)
         </p>
@@ -173,7 +174,7 @@ export function NewTransactionForm() {
         <div className="space-y-2">
           <Label htmlFor="amount">Jumlah (IDR)</Label>
           <input type="hidden" name="amount" value={amount} />
-          <Input
+          <input
             id="amount"
             type="text"
             inputMode="numeric"
@@ -182,7 +183,10 @@ export function NewTransactionForm() {
             required
             value={formatRupiahInput(amount)}
             onChange={(e) => setAmount(digitsOnly(e.target.value))}
-            className="min-h-11 text-base"
+            className={cn(
+              "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+              "min-h-11 text-base",
+            )}
           />
           <p className="text-xs text-muted-foreground">
             Hanya angka. Contoh: 85000 akan jadi Rp 85.000

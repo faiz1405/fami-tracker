@@ -16,6 +16,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { cheerfulCard } from "@/lib/cheerful-card";
+import { cn } from "@/lib/utils";
 
 type ChatItem = {
   id: string;
@@ -75,7 +77,7 @@ export function ConsultantChat() {
 
   return (
     <div className="flex h-[calc(100dvh-8.5rem)] flex-col gap-3">
-      <Card className="flex-1 border-border bg-card">
+      <Card className={cn("flex-1", cheerfulCard.violet)}>
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium text-muted-foreground">
             Riwayat diskusi
@@ -130,7 +132,7 @@ export function ConsultantChat() {
           setLastSent(q);
           formAction(fd);
         }}
-        className="sticky bottom-16 z-10 rounded-xl border border-border bg-card p-2"
+        className="sticky bottom-16 z-10 rounded-2xl border border-foreground/10 bg-gradient-to-br from-card to-violet-500/[0.05] p-2 shadow-lg ring-1 ring-violet-500/25 backdrop-blur-sm dark:to-violet-400/10"
       >
         <div className="flex items-center gap-2">
           <Input

@@ -22,8 +22,8 @@ export function SmartAlertCards({ alerts }: Props) {
             key={alert.id}
             className={
               warning
-                ? "border-amber-500/40 bg-amber-500/5"
-                : "border-border bg-card"
+                ? "border-0 bg-gradient-to-br from-amber-500/10 via-card to-card shadow-md ring-1 ring-amber-500/35 transition-shadow duration-200 hover:shadow-lg dark:from-amber-500/15 dark:ring-amber-400/30"
+                : "border-0 bg-gradient-to-br from-sky-500/[0.06] via-card to-card shadow-md ring-1 ring-sky-500/20 transition-shadow duration-200 hover:shadow-lg dark:from-sky-400/10 dark:ring-sky-400/25"
             }
           >
             <CardHeader className="pb-2">

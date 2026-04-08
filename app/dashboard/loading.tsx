@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { cheerfulCard } from "@/lib/cheerful-card";
 
 function Skeleton({ className }: { className?: string }) {
   return (
@@ -13,7 +14,7 @@ export default function DashboardLoading() {
         <Skeleton className="size-7 rounded-lg" />
         <Skeleton className="h-8 w-32" />
       </div>
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.emerald}>
         <CardHeader className="pb-2">
           <Skeleton className="h-4 w-28" />
         </CardHeader>
@@ -25,7 +26,7 @@ export default function DashboardLoading() {
           </div>
         </CardContent>
       </Card>
-      <Card className="border-border bg-card">
+      <Card className={cheerfulCard.violet}>
         <CardHeader className="pb-2">
           <Skeleton className="h-4 w-36" />
         </CardHeader>

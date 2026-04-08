@@ -22,6 +22,7 @@ export default defineConfig({
   webServer: {
     command: "npm run build && npm run start",
     url: "http://127.0.0.1:3000",
+    // Lokal: reuse bisa menyajikan bundle lama; set CI=1 agar `build && start` segar (disarankan untuk e2e penuh).
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     stdout: "pipe",
