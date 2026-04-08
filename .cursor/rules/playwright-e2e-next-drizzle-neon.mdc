@@ -1,0 +1,38 @@
+---
+description: Playwright E2E untuk Next.js 16 App Router dengan Drizzle ORM dan Neon
+globs:
+  - "**/e2e/**/*.{ts,tsx,js,jsx}"
+  - "**/tests/e2e/**/*.{ts,tsx,js,jsx}"
+  - "**/playwright.config.{ts,js,mjs}"
+alwaysApply: false
+---
+
+# Playwright E2E — Next 16 · App Router · Drizzle · Neon
+
+## Prinsip
+- Uji alur pengguna nyata di browser; hindari menguji detail implementasi komponen (itu tugas unit).
+- **Jangan** pakai string koneksi Neon produksi untuk E2E. Pakai branch Neon terpisah, URL `DATABASE_URL` khusus test, atau DB lokal yang skema sama dengan Drizzle.
+- Skema DB harus selaras dengan migrasi Drizzle (`drizzle-kit generate` / `push`) sebelum suite jalan.
+
+## Konfigurasi Playwright + Next
+- `playwright.config`: `webServer` menjalankan `next dev` atau `next start` (setelah `next build`) dengan `reuseExistingServer: !process.env.CI`.
+- Set `baseURL` (mis. `http://127.0.0.1:3000`) dan `testDir` ke folder `e2e/` atau `tests/e2e/`.
+- Untuk App Router: navigasi dengan `page.goto()` + `getByRole` / `getByLabel` (prioritas aksesibilitas); `data-testid` hanya jika tidak ada peran/label yang stabil.
+
+## Data & Drizzle
+- **Setup global**: migrasi/skema + seed minimal di `globalSetup`, atau reset tabel di `beforeEach`/`afterEach` via skrip Node yang memakai Drizzle (bukan lewat UI kecuali memang skenario).
+- Transaksi per-test dengan Neon serverless bisa rumit; pola praktis: **truncate** tabel terurut (hormati FK) atau **seed idempoten** dengan ID tetap untuk asersi.
+- Jika butuh user login: buat user di DB lewat Drizzle di fixture/setup, lalu login lewat UI atau cookie/session sesuai cara auth app (Better Auth / session Next).
+
+## Stabilitas
+- `expect` dengan auto-waiting; hindari `waitForTimeout` kecuali benar-benar tidak ada alternatif.
+- Mock hanya boundary eksternal (API pihak ketiga, email); **jangan** mock Neon jika tujuan tes adalah integrasi DB.
+- Screenshot/trace: aktifkan `trace: 'on-first-retry'` di CI untuk debugging.
+
+## Struktur tes
+- Satu file per area fitur atau user journey; nama deskriptif (`auth.spec.ts`, `transactions.spec.ts`).
+- `test.describe` untuk grup; hindari dependensi berantai antar `test()` — tiap tes idealnya bisa jalan sendiri setelah reset/seed.
+
+## Perintah
+- Dokumentasikan di `package.json`: mis. `"test:e2e": "playwright test"`, `"test:e2e:ui": "playwright test --ui"`.
+- CI: set env `DATABASE_URL` (branch test), jalankan migrasi, lalu `playwright install --with-deps` lalu `playwright test`.

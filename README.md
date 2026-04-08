@@ -104,6 +104,16 @@ npm run dev
 - `npm run db:reset` - Kosongkan data tabel transaksi (TRUNCATE).
 - `npm run deploy:preview` - Deploy preview ke Vercel.
 - `npm run deploy:prod` - Deploy production ke Vercel.
+- `npm run test:e2e` - Playwright E2E (build + `next start` otomatis).
+- `npm run test:e2e:ui` - Playwright UI mode.
+- `npm run test:e2e:headed` - Playwright dengan browser terlihat.
+
+## E2E (Playwright)
+
+- Konfigurasi: `playwright.config.ts`, tes di folder `e2e/`.
+- **`globalSetup`** menjalankan `TRUNCATE TABLE transactions` jika `DATABASE_URL` atau **`E2E_DATABASE_URL`** tersedia (disarankan branch Neon khusus tes — lihat `.cursor/rules/playwright-e2e-next-drizzle-neon.mdc`).
+- Pertama kali di mesin baru: `npx playwright install chromium`.
+- Lokal, jika `next dev` sudah jalan di port 3000, Playwright akan **reuse** server (kecuali `CI=true`).
 
 ## Deploy
 
